@@ -1,5 +1,5 @@
 /* ===== CONFIGURAÇÃO (edite aqui) ===== */
-const WHATSAPP = "5500000000000"; // DDI+DDD+número, só dígitos
+const WHATSAPP = "5584981807021"; // DDI+DDD+número, só dígitos
 const LOJA = { // dados que aparecem no rodapé e nas políticas
   razao:"Claudia Fitness", doc:"CNPJ/CPF 00.000.000/0000-00",
   email:"contato@seudominio.com.br", cidade:"Sua cidade - UF", prazoTroca:"30"
