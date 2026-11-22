@@ -212,4 +212,29 @@ $("finalizar").onclick=()=>{
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`,"_blank","noopener,noreferrer");
 };
 
+    (function(){
+      var $=function(i){return document.getElementById(i)};
+
+      /* Logo: se logo.png existir, esconde o texto para o nome não aparecer duas vezes */
+      var logo=document.querySelector(".logo"),img=logo.querySelector("img");
+      function temLogo(){logo.classList.add("tem-logo")}
+      if(img.complete&&img.naturalWidth>0)temLogo();
+      img.addEventListener("load",temLogo);
+
+      /* Marca a categoria aberta (usado pelo CSS para desenhar as peças) */
+      function cat(){
+        var m=location.hash.match(/^#\/(shorts|calcas|blusas)$/);
+        $("pagina").setAttribute("data-cat",m?m[1]:"");
+      }
+      cat();addEventListener("hashchange",cat);
+
+      /* Aviso: o login do Firebase pode não funcionar abrindo o arquivo direto no computador */
+      if(location.protocol==="file:"){
+        $("loginBtn").addEventListener("click",function(){
+          $("msgLogin").textContent="Para o login funcionar, abra o site por um endereço http(s) (hospedado ou servidor local), e não clicando direto no arquivo.";
+        });
+      }
+    })();
+  
+
 renderHome();renderRodape();renderCarrinho();rota();iniciaAuth();
