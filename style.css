@@ -1,4 +1,95 @@
-:root{--rosa:#ff2d8f;--rosa2:#ff7ab8;--preto:#111;--branco:#fff;--cinza:#f6f1f4}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src https://*.googleapis.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Claudia Fitness | Moda Fitness</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <button class="icone" id="menuBtn" aria-label="Abrir menu">☰</button>
+  <a href="#topo" class="logo" id="topo">
+    <img src="logo.png" alt="Claudia Fitness">
+    <span>Claudia Fitness</span>
+  </a>
+  <nav id="menu" aria-label="Principal">
+    <ul>
+      <li><a href="#loja">Loja</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+  <div class="acoes">
+    <button class="btn sec" id="loginBtn">Entrar</button>
+    <button class="icone" id="cartBtn" aria-label="Carrinho">🛒<span id="qtd">0</span></button>
+  </div>
+</header>
+<div class="overlay" id="overlay"></div>
+
+<div id="home">
+<div class="hero">
+  <h1>Treine com estilo 💗</h1>
+  <p>Shorts, calças e blusas fitness feitas para você.</p>
+  <a href="#loja" class="btn">Ver coleção</a>
+</div>
+
+<section id="loja">
+  <h2>Loja</h2>
+  <div class="grid cats" id="cats"></div>
+</section>
+
+<section class="sobre" id="sobre">
+  <h2>Sobre</h2>
+  <p>A Claudia Fitness nasceu para vestir mulheres que se movem com confiança. Trabalhamos com tecidos de alta performance, conforto e caimento perfeito para treinar e para o dia a dia.</p>
+</section>
+
+<section id="contato">
+  <h2>Contato</h2>
+  <div class="contato">
+    <a class="btn" href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <a class="btn sec" href="https://instagram.com/SEU_INSTAGRAM" target="_blank" rel="noopener noreferrer">Instagram</a>
+  </div>
+</section>
+</div>
+
+<section id="pagina" hidden></section>
+
+<footer id="rodape"></footer>
+
+<aside class="painel" id="painel" aria-label="Carrinho">
+  <header><strong>Seu carrinho</strong><button class="icone" id="fechaCart">✕</button></header>
+  <div id="itens"></div>
+  <div class="rodape">
+    <div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
+    <button class="btn" style="width:100%" id="finalizar">Finalizar no WhatsApp</button>
+  </div>
+</aside>
+
+<div class="modal" id="modal">
+  <div class="caixa">
+    <h3 id="modalTitulo">Entrar</h3>
+    <div id="logado" style="display:none"><p id="quem"></p><button class="btn sec" id="sair">Sair</button></div>
+    <div id="formLogin" style="display:contents">
+      <input type="email" id="email" placeholder="E-mail" autocomplete="email" maxlength="120">
+      <input type="password" id="senha" placeholder="Senha (mín. 8 caracteres)" autocomplete="current-password" maxlength="64">
+      <button class="btn" id="entrar">Entrar</button>
+      <button class="btn sec" id="criar">Criar conta</button>
+      <button class="btn" style="background:#111" id="google">Entrar com Google</button>
+    </div>
+    <div class="msg" id="msgLogin"></div>
+    <button class="icone" style="color:#111;font-size:1rem" id="fechaModal">Fechar</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
+[22/11, 17:12] Gleydson: :root{--rosa:#ff2d8f;--rosa2:#ff7ab8;--preto:#111;--branco:#fff;--cinza:#f6f1f4}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--preto);background:var(--branco);line-height:1.5}
