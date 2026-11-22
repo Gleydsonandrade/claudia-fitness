@@ -1,165 +1,224 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src https://*.googleapis.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<title>Claudia Fitness | Moda Fitness</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-  <button class="icone" id="menuBtn" aria-label="Abrir menu">☰</button>
-  <a href="#topo" class="logo" id="topo">
-    <img src="logo.png" alt="Claudia Fitness">
-    <span>Claudia Fitness</span>
-  </a>
-  <nav id="menu" aria-label="Principal">
-    <ul>
-      <li><a href="#loja">Loja</a></li>
-      <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#contato">Contato</a></li>
-    </ul>
-  </nav>
-  <div class="acoes">
-    <button class="btn sec" id="loginBtn">Entrar</button>
-    <button class="icone" id="cartBtn" aria-label="Carrinho">🛒<span id="qtd">0</span></button>
-  </div>
-</header>
-<div class="overlay" id="overlay"></div>
-
-<div id="home">
-<div class="hero">
-  <h1>Treine com estilo 💗</h1>
-  <p>Shorts, calças e blusas fitness feitas para você.</p>
-  <a href="#loja" class="btn">Ver coleção</a>
-</div>
-
-<section id="loja">
-  <h2>Loja</h2>
-  <div class="grid cats" id="cats"></div>
-</section>
-
-<section class="sobre" id="sobre">
-  <h2>Sobre</h2>
-  <p>A Claudia Fitness nasceu para vestir mulheres que se movem com confiança. Trabalhamos com tecidos de alta performance, conforto e caimento perfeito para treinar e para o dia a dia.</p>
-</section>
-
-<section id="contato">
-  <h2>Contato</h2>
-  <div class="contato">
-    <a class="btn" href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-    <a class="btn sec" href="https://instagram.com/SEU_INSTAGRAM" target="_blank" rel="noopener noreferrer">Instagram</a>
-  </div>
-</section>
-</div>
-
-<section id="pagina" hidden></section>
-
-<footer id="rodape"></footer>
-
-<aside class="painel" id="painel" aria-label="Carrinho">
-  <header><strong>Seu carrinho</strong><button class="icone" id="fechaCart">✕</button></header>
-  <div id="itens"></div>
-  <div class="rodape">
-    <div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
-    <button class="btn" style="width:100%" id="finalizar">Finalizar no WhatsApp</button>
-  </div>
-</aside>
-
-<div class="modal" id="modal">
-  <div class="caixa">
-    <h3 id="modalTitulo">Entrar</h3>
-    <div id="logado" style="display:none"><p id="quem"></p><button class="btn sec" id="sair">Sair</button></div>
-    <div id="formLogin" style="display:contents">
-      <input type="email" id="email" placeholder="E-mail" autocomplete="email" maxlength="120">
-      <input type="password" id="senha" placeholder="Senha (mín. 8 caracteres)" autocomplete="current-password" maxlength="64">
-      <button class="btn" id="entrar">Entrar</button>
-      <button class="btn sec" id="criar">Criar conta</button>
-      <button class="btn" style="background:#111" id="google">Entrar com Google</button>
-    </div>
-    <div class="msg" id="msgLogin"></div>
-    <button class="icone" style="color:#111;font-size:1rem" id="fechaModal">Fechar</button>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-
-<script src="script.js" defer></script>
-</body>
-</html>
-[22/11, 17:12] Gleydson: :root{--rosa:#ff2d8f;--rosa2:#ff7ab8;--preto:#111;--branco:#fff;--cinza:#f6f1f4}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--preto);background:var(--branco);line-height:1.5}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:0}
-header{position:sticky;top:0;z-index:50;background:var(--preto);color:var(--branco);display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:3px solid var(--rosa)}
-.logo{display:flex;align-items:center;gap:.5rem;font-weight:800;color:var(--rosa)}
-.logo img{height:44px;width:auto}
-nav ul{display:flex;gap:1.5rem;list-style:none}
-nav a{font-weight:600;padding:.3rem 0;border-bottom:2px solid transparent}
-nav a:hover{color:var(--rosa);border-color:var(--rosa)}
-.acoes{display:flex;gap:.5rem;align-items:center}
-.btn{background:var(--rosa);color:#fff;padding:.6rem 1.1rem;border-radius:999px;font-weight:700;transition:.2s}
-.btn:hover{background:var(--rosa2)}
-.btn.sec{background:transparent;border:2px solid var(--rosa);color:var(--rosa)}
-.icone{background:none;color:#fff;font-size:1.4rem;position:relative;padding:.3rem .5rem}
-#qtd{position:absolute;top:-4px;right:-4px;background:var(--rosa);border-radius:50%;font-size:.7rem;min-width:18px;height:18px;display:grid;place-items:center}
-#menuBtn{display:none;font-size:1.8rem}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.3s;z-index:45}
-.overlay.on{opacity:1;pointer-events:auto}
-@media(max-width:768px){
- #menuBtn{display:block}
- nav{position:fixed;top:0;left:0;height:100%;width:75%;max-width:300px;background:var(--preto);transform:translateX(-100%);transition:.3s;z-index:70;padding:5rem 1.5rem;overflow:auto;border-right:3px solid var(--rosa)}
- nav.on{transform:none}
- nav ul{flex-direction:column;gap:1.5rem;font-size:1.2rem}
+/* =========================================================
+   CLAUDIA FITNESS — Rosa, Preto e Branco
+   Compatível com o app.js (IDs e classes do JavaScript)
+   ========================================================= */
+:root{
+  --rosa:#ff2d87; --rosa2:#d4146a; --rosa-claro:#ffe3ef; --rosa-suave:#fff5f9;
+  --preto:#111; --preto2:#1c1c1f; --cinza:#6b6b73; --cinza-claro:#ececf0; --branco:#fff;
+  --wpp:#25d366; --wpp2:#1ebe5b;
+  --raio:14px; --sombra:0 8px 28px rgba(0,0,0,.08); --sombra-rosa:0 10px 30px rgba(255,45,135,.28);
+  --t:.25s ease;
 }
-.hero{background:linear-gradient(135deg,var(--preto),#3a0f27 60%,var(--rosa));color:#fff;text-align:center;padding:4rem 1rem}
-.hero h1{font-size:clamp(2rem,6vw,3.5rem)}
-.hero p{margin:1rem 0 1.5rem;opacity:.9}
-section{padding:3rem 1rem;max-width:1100px;margin:auto}
-h2{text-align:center;font-size:1.8rem;margin-bottom:1.5rem}
-h2::after{content:"";display:block;width:60px;height:4px;background:var(--rosa);margin:.5rem auto 0;border-radius:4px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
-.card{border:1px solid #eee;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px #0001;display:flex;flex-direction:column}
-.card .info{padding:1rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
-.preco{color:var(--rosa);font-weight:800;font-size:1.2rem}
-select{padding:.5rem;border-radius:8px;border:1px solid #ccc;font:inherit}
-.sobre{background:var(--cinza);max-width:none}
-.sobre p{max-width:700px;margin:auto;text-align:center}
-.contato{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-footer{background:var(--preto);color:#fff;text-align:center;padding:1.5rem;border-top:3px solid var(--rosa)}
-.painel{position:fixed;top:0;right:0;height:100%;width:100%;max-width:400px;background:#fff;z-index:80;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column}
-.painel.on{transform:none}
-.painel header{position:static}
-#itens{flex:1;overflow:auto;padding:1rem}
-.item{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.7rem 0;border-bottom:1px solid #eee}
-.item small{color:#666}
-.qtdbtn button{width:28px;height:28px;border-radius:50%;background:var(--cinza);font-weight:700}
-.rodape{padding:1rem;border-top:1px solid #eee}
-.total{display:flex;justify-content:space-between;font-weight:800;font-size:1.2rem;margin-bottom:.8rem}
-.modal{position:fixed;inset:0;display:none;place-items:center;z-index:90;padding:1rem}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Poppins',sans-serif;color:var(--preto);background:var(--branco);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+.wrap{width:min(1180px,92%);margin-inline:auto}
+
+/* ---------- Botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:50px;font-weight:600;font-size:.95rem;background:var(--rosa);color:var(--branco);transition:var(--t);text-align:center}
+.btn:hover{background:var(--rosa2);transform:translateY(-2px);box-shadow:var(--sombra-rosa)}
+.btn.big{padding:16px 36px;font-size:1.05rem}
+.btn.mini{padding:8px 18px;font-size:.85rem}
+.btn.cheio{width:100%}
+.btn.alt{background:transparent;color:var(--preto);border:2px solid var(--preto)}
+.btn.alt:hover{background:var(--preto);color:var(--branco);box-shadow:none}
+.btn.alt-light{background:transparent;color:var(--branco);border:2px solid var(--branco)}
+.btn.alt-light:hover{background:var(--rosa);border-color:var(--rosa);box-shadow:none}
+.btn.wpp{background:var(--wpp)}
+.btn.wpp:hover{background:var(--wpp2);box-shadow:0 10px 26px rgba(37,211,102,.35)}
+.btn.goog{background:var(--branco);color:var(--preto);border:1.5px solid var(--cinza-claro)}
+.btn.goog:hover{background:var(--branco);border-color:var(--preto);box-shadow:none}
+
+/* ---------- Topo ---------- */
+.top{position:sticky;top:0;z-index:100;background:var(--preto);color:var(--branco)}
+.top__in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--branco);white-space:nowrap}
+.logo img{height:42px;width:auto;border-radius:6px}
+.logo b{color:var(--rosa);font-style:italic}
+
+.menu{display:flex;gap:30px}
+.menu a{font-size:.92rem;font-weight:500;color:#e8e8ec;position:relative;padding:4px 0;transition:var(--t)}
+.menu a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--rosa);transition:var(--t)}
+.menu a:hover{color:var(--branco)}
+.menu a:hover::after{width:100%}
+
+.acoes{display:flex;align-items:center;gap:12px}
+.cartbtn{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--branco);transition:var(--t)}
+.cartbtn:hover{background:var(--rosa)}
+.qtd{position:absolute;top:0;right:0;min-width:20px;height:20px;padding:0 5px;display:grid;place-items:center;background:var(--rosa);color:var(--branco);font-size:.72rem;font-weight:700;border-radius:20px;border:2px solid var(--preto)}
+
+.hamb{display:none;flex-direction:column;gap:5px;padding:8px}
+.hamb span{width:24px;height:2.5px;background:var(--branco);border-radius:2px}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;color:var(--branco);padding:110px 0 120px;
+  background:radial-gradient(circle at 85% 20%,rgba(255,45,135,.45),transparent 45%),radial-gradient(circle at 10% 90%,rgba(255,45,135,.2),transparent 40%),var(--preto)}
+.hero::after{content:'';position:absolute;right:-120px;top:50%;width:420px;height:420px;border:2px solid rgba(255,45,135,.35);border-radius:50%;transform:translateY(-50%)}
+.hero__in{position:relative;z-index:1;max-width:660px;margin-left:max(4%,calc((100% - 1180px)/2))}
+.tag{display:inline-block;background:var(--rosa);padding:6px 16px;border-radius:50px;font-size:.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5.5vw,3.9rem);line-height:1.15;margin-bottom:20px}
+.hero h1 em{color:var(--rosa);font-style:italic}
+.hero__txt{font-size:1.05rem;color:#d8d8de;margin-bottom:34px;max-width:520px}
+
+/* ---------- Vantagens ---------- */
+.vantagens{background:var(--rosa-suave);padding:40px 0}
+.vantagens__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center}
+.vantagens span{font-size:2rem;display:block;margin-bottom:6px}
+.vantagens h3{font-size:1.05rem;margin-bottom:4px}
+.vantagens p{font-size:.9rem;color:var(--cinza)}
+
+/* ---------- Títulos ---------- */
+.titulo{text-align:center;margin-bottom:40px}
+.titulo span{color:var(--rosa);font-weight:600;text-transform:uppercase;letter-spacing:2px;font-size:.82rem}
+.titulo h2,.pagina h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);margin-top:4px}
+.titulo h2::after{content:'';display:block;width:60px;height:4px;background:var(--rosa);margin:12px auto 0;border-radius:4px}
+
+/* ---------- Categorias (home) ---------- */
+.loja{padding:80px 0}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.cat{display:flex;flex-direction:column;gap:8px;justify-content:flex-end;min-height:240px;padding:28px;border-radius:var(--raio);color:var(--branco);box-shadow:var(--sombra);transition:var(--t);background:linear-gradient(145deg,#ff7ab5,var(--rosa))}
+.cat:nth-child(2){background:linear-gradient(145deg,#3a3a40,var(--preto))}
+.cat:nth-child(3){background:linear-gradient(145deg,#fff,var(--rosa-claro));color:var(--preto);border:1px solid var(--cinza-claro)}
+.cat:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.18)}
+.cat strong{font-family:'Playfair Display',serif;font-size:1.9rem}
+.cat span{font-size:.92rem;opacity:.9}
+.cat span:last-child{font-weight:600;margin-top:6px}
+
+/* ---------- Página de categoria ---------- */
+.pagina{padding:50px 0 80px}
+.voltar{display:inline-block;color:var(--rosa);font-weight:600;font-size:.9rem;margin-bottom:18px}
+.voltar:hover{text-decoration:underline}
+.pagina .sub{color:var(--cinza);margin:6px 0 32px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+
+.card{display:flex;flex-direction:column;background:var(--branco);border:1px solid var(--cinza-claro);border-radius:var(--raio);overflow:hidden;box-shadow:var(--sombra);transition:var(--t)}
+.card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.14)}
+.card::before{content:'💗';display:grid;place-items:center;height:190px;font-size:4rem;background:linear-gradient(145deg,#ff7ab5,var(--rosa))}
+.card:nth-child(3n+2)::before{content:'🖤';background:linear-gradient(145deg,#3a3a40,var(--preto))}
+.card:nth-child(3n+3)::before{content:'🤍';background:linear-gradient(145deg,#fff,var(--rosa-claro))}
+.info{display:flex;flex-direction:column;gap:6px;padding:20px;flex:1}
+.info h3{font-size:1.05rem;font-weight:600}
+.preco{font-size:1.4rem;font-weight:700;color:var(--rosa);margin-bottom:4px}
+.info small{color:var(--cinza);font-size:.8rem}
+.tams{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.tams button{min-width:42px;height:38px;padding:0 10px;border:2px solid var(--cinza-claro);border-radius:10px;font-size:.82rem;font-weight:600;transition:var(--t)}
+.tams button:hover{border-color:var(--rosa)}
+.tams button.on{background:var(--preto);border-color:var(--preto);color:var(--branco)}
+.info .btn{margin-top:auto;width:100%}
+
+/* Tabela de medidas */
+.tbl{margin:14px auto 0;border-collapse:collapse;width:min(560px,100%);box-shadow:var(--sombra);border-radius:var(--raio);overflow:hidden}
+.tbl th{background:var(--preto);color:var(--branco);padding:12px;font-size:.85rem}
+.tbl td{padding:11px;text-align:center;border-bottom:1px solid var(--cinza-claro);font-size:.9rem}
+.tbl tr:nth-child(even) td{background:var(--rosa-suave)}
+.tbl td:first-child{font-weight:700;color:var(--rosa)}
+
+/* Páginas de política */
+.leg{max-width:780px;margin:0 auto}
+.leg h2{margin-bottom:20px}
+.leg h3{margin:24px 0 6px;font-size:1.05rem;color:var(--rosa2)}
+.leg p{color:#3b3b42}
+.leg .aviso{margin-top:32px;font-size:.82rem;color:var(--cinza)}
+
+/* ---------- Sobre ---------- */
+.sobre{background:var(--preto);color:var(--branco);padding:90px 0}
+.sobre__grid{display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:center}
+.sobre__tag{color:var(--rosa);text-transform:uppercase;letter-spacing:2px;font-size:.82rem;font-weight:600}
+.sobre h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);margin:8px 0 18px}
+.sobre p{color:#cfcfd6;margin-bottom:14px}
+.sobre strong{color:var(--rosa)}
+.sobre__box{background:linear-gradient(145deg,var(--rosa),var(--rosa2));border-radius:var(--raio);padding:50px 36px;box-shadow:var(--sombra-rosa)}
+.sobre__box p{font-family:'Playfair Display',serif;font-size:1.6rem;line-height:1.4;color:var(--branco);margin:0}
+
+/* ---------- Rodapé (links e textos gerados pelo JS) ---------- */
+.rodape{background:var(--preto2);color:#cfcfd6;text-align:center;padding:44px 5% 36px}
+.rodape a{display:inline-block;margin:0 14px 16px;font-weight:500;color:var(--branco);transition:var(--t)}
+.rodape a:hover{color:var(--rosa)}
+.rodape p{font-size:.85rem;margin-top:4px}
+.rodape p:last-child{margin-top:16px;padding-top:16px;border-top:1px solid #2c2c32;font-size:.8rem}
+
+/* ---------- Fundo escuro ---------- */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:var(--t);z-index:200}
+.overlay.on{opacity:1;visibility:visible}
+
+/* ---------- Carrinho ---------- */
+.painel{position:fixed;top:0;right:0;width:min(430px,100%);height:100%;background:var(--branco);z-index:300;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s ease,box-shadow .35s ease}
+.painel.on{transform:translateX(0);box-shadow:-10px 0 40px rgba(0,0,0,.2)}
+.painel__top{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:var(--preto);color:var(--branco)}
+.painel__top h3{font-family:'Playfair Display',serif;font-size:1.3rem}
+.x{font-size:2rem;line-height:1;width:40px;height:40px;border-radius:50%;transition:var(--t)}
+.x:hover{background:var(--rosa);color:var(--branco)}
+.itens{flex:1;overflow-y:auto;padding:16px 24px}
+.itens>p{text-align:center;color:var(--cinza);margin-top:60px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--cinza-claro)}
+.item strong{font-size:.95rem}
+.item small{color:var(--cinza)}
+.qtdbtn{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.qtdbtn button{width:30px;height:30px;border-radius:50%;background:var(--cinza-claro);font-weight:700;transition:var(--t)}
+.qtdbtn button:hover{background:var(--rosa);color:var(--branco)}
+.qtdbtn span{min-width:22px;text-align:center;font-weight:600}
+.painel__fim{padding:20px 24px 24px;border-top:1px solid var(--cinza-claro);background:var(--rosa-suave);display:flex;flex-direction:column;gap:10px}
+.totalbox{display:flex;justify-content:space-between;align-items:center;font-size:1.1rem}
+.totalbox strong{font-size:1.5rem;color:var(--rosa)}
+.nota{font-size:.75rem;color:var(--cinza);text-align:center}
+
+/* ---------- Login ---------- */
+.modal{position:fixed;inset:0;display:none;place-items:center;padding:16px;background:rgba(0,0,0,.65);z-index:400}
 .modal.on{display:grid}
-.modal .caixa{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:380px;display:flex;flex-direction:column;gap:.7rem;border-top:6px solid var(--rosa)}
-.modal input{padding:.7rem;border:1px solid #ccc;border-radius:8px;font:inherit}
-.msg{font-size:.9rem;color:#c0006a;min-height:1.2em}
-.cats{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.cat{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:2rem 1rem;border-radius:16px;background:var(--preto);color:#fff;border-bottom:5px solid var(--rosa);transition:.2s;text-align:center}
-.cat:hover{transform:translateY(-4px);background:#2a0a1b}
-.cat strong{font-size:1.3rem;color:var(--rosa2)}
-.voltar{display:inline-block;margin-bottom:1rem;font-weight:700;color:var(--rosa)}
-.sub{text-align:center;margin:-.8rem 0 1.5rem;color:#555}
-.tams{display:flex;gap:.3rem;flex-wrap:wrap}
-.tams button{flex:1;min-width:38px;padding:.45rem 0;border-radius:8px;background:#fff;border:2px solid #ddd;font-weight:700}
-.tams button.on{background:var(--preto);color:#fff;border-color:var(--rosa)}
-.tbl{width:100%;border-collapse:collapse;margin-top:2rem;font-size:.9rem;text-align:center}
-.tbl th{background:var(--preto);color:#fff;padding:.5rem}.tbl td{padding:.5rem;border-bottom:1px solid #eee}
-.leg{max-width:760px;margin:auto}
-.leg h3{margin:1.5rem 0 .4rem;color:var(--rosa)}
-.leg p{margin-bottom:.6rem}
-.leg .aviso{background:var(--cinza);border-left:4px solid var(--rosa);padding:.7rem 1rem;border-radius:8px;font-size:.9rem}
-footer a{color:var(--rosa2);margin:0 .6rem;font-weight:600}
-footer p{margin-top:.5rem;font-size:.85rem;opacity:.85}
-.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--preto);color:#fff;padding:.7rem 1.2rem;border-radius:999px;z-index:100;display:none;border:2px solid var(--rosa)}
+.box{position:relative;width:min(430px,100%);max-height:94vh;overflow-y:auto;background:var(--branco);border-radius:20px;border-top:6px solid var(--rosa);padding:34px 32px 28px;animation:sobe .3s ease}
+.box .x{position:absolute;top:10px;right:10px}
+.box__logo{text-align:center;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700}
+.box__logo b{color:var(--rosa);font-style:italic}
+.box h2{text-align:center;font-size:1.15rem;margin:6px 0 18px;color:var(--cinza);font-weight:500}
+.box label{display:block;font-size:.82rem;font-weight:600;margin:10px 0 6px}
+.box input{width:100%;padding:13px 16px;border:2px solid var(--cinza-claro);border-radius:12px;font-size:.95rem;transition:var(--t)}
+.box input:focus{outline:none;border-color:var(--rosa);box-shadow:0 0 0 4px var(--rosa-claro)}
+.box .btn{margin-top:12px}
+.abas{display:flex;background:var(--cinza-claro);border-radius:50px;padding:4px;margin-bottom:8px}
+.abas button{flex:1;padding:10px;border-radius:50px;font-weight:600;font-size:.9rem;color:var(--cinza);transition:var(--t)}
+.abas button.on{background:var(--preto);color:var(--branco)}
+.ou{display:flex;align-items:center;gap:12px;margin-top:14px;color:var(--cinza);font-size:.8rem}
+.ou::before,.ou::after{content:'';flex:1;height:1px;background:var(--cinza-claro)}
+.quem{text-align:center;margin-bottom:8px;color:var(--preto);font-weight:500;word-break:break-word}
+.msg{text-align:center;font-size:.85rem;color:#d32f2f;margin-top:14px;min-height:1.2em}
+
+/* ---------- Aviso rápido ---------- */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);display:none;background:var(--preto);color:var(--branco);padding:14px 26px;border-radius:50px;border-left:5px solid var(--rosa);font-size:.9rem;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:500;max-width:90%;text-align:center;animation:sobe .3s ease}
+
+@keyframes sobe{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+.box{animation-name:sobeBox}
+@keyframes sobeBox{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ---------- Responsivo ---------- */
+@media (max-width:900px){
+  .sobre__grid{grid-template-columns:1fr}
+  .vantagens__grid{grid-template-columns:1fr;gap:14px}
+  .cats{grid-template-columns:1fr}
+  .cat{min-height:170px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:800px){
+  .hamb{display:flex}
+  .top__in{gap:8px}
+  .logo{font-size:1.25rem;margin-right:auto}
+  .logo img{height:36px}
+  /* menu vira gaveta pela esquerda */
+  .menu{position:fixed;top:0;left:0;width:260px;height:100%;background:var(--preto);flex-direction:column;gap:0;padding:80px 24px 24px;transform:translateX(-100%);transition:transform .35s ease,box-shadow .35s ease;z-index:300}
+  .menu.on{transform:translateX(0);box-shadow:10px 0 40px rgba(0,0,0,.3)}
+  .menu a{padding:16px 0;border-bottom:1px solid #2a2a30;font-size:1rem}
+  .hero{padding:80px 0 90px}
+  .hero::after{display:none}
+  .hero__in{margin-left:auto}
+  .loja{padding:60px 0}
+}
+@media (max-width:480px){
+  .logo span{display:none}
+  .grid{grid-template-columns:1fr}
+  .box{padding:30px 22px 24px}
+  .rodape a{margin:0 8px 14px}
+}
