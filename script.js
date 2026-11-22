@@ -4,14 +4,11 @@ const LOJA = { // dados que aparecem no rodapé e nas políticas
   razao:"Claudia Fitness", doc:"CNPJ/CPF 00.000.000/0000-00",
   email:"contato@seudominio.com.br", cidade:"Sua cidade - UF", prazoTroca:"30"
 };
-const firebaseConfig = {
-  apiKey: "AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
-  authDomain: "claudia-fitness-d5d8e.firebaseapp.com",
-  projectId: "claudia-fitness-d5d8e",
-  storageBucket: "claudia-fitness-d5d8e.firebasestorage.app",
-  messagingSenderId: "613004915926",
-  appId: "1:613004915926:web:e4636bcc3941b86e660577",
-  measurementId: "G-8QVQNGEP98"
+const firebaseConfig = { // Firebase Console > Configurações do projeto
+  apiKey:"AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
+  authDomain:"claudia-fitness-d5d8e.firebaseapp.com",
+  projectId:"claudia-fitness-d5d8e",
+  appId:"1:613004915926:web:e4636bcc3941b86e660577"
 };
 /* ===================================== */
 
@@ -165,9 +162,26 @@ document.querySelectorAll("#menu a").forEach(a=>a.onclick=fechaTudo);
 $("loginBtn").onclick=()=>$("modal").classList.add("on");
 $("fechaModal").onclick=()=>$("modal").classList.remove("on");
 
-
-
-
+/* ---------- Login (Firebase Auth: e-mail e Google) ---------- */
+const configurado=!firebaseConfig.apiKey.startsWith("SUA_");
+let auth=null,A=null,usuario=null;
+async function iniciaAuth(){
+  if(!configurado||A)return A;
+  try{
+    const V="10.12.2",B="https://www.gstatic.com/firebasejs/"+V+"/";
+    const [app,au]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js")]);
+    auth=au.getAuth(app.initializeApp(firebaseConfig));A=au;
+    au.onAuthStateChanged(auth,u=>{
+      usuario=u;
+      $("loginBtn").textContent=u?"Conta":"Entrar";
+      $("logado").style.display=u?"block":"none";
+      $("formLogin").style.display=u?"none":"contents";
+      $("modalTitulo").textContent=u?"Minha conta":"Entrar";
+      $("quem").textContent=u?"Logada como "+(u.displayName||u.email):"";
+    });
+  }catch(e){A=null}
+  return A;
+}
 const msg=t=>$("msgLogin").textContent=t;
 const erros={"auth/invalid-credential":"E-mail ou senha incorretos.","auth/email-already-in-use":"Este e-mail já está cadastrado.","auth/weak-password":"Senha fraca (mín. 8 caracteres).","auth/invalid-email":"E-mail inválido.","auth/popup-closed-by-user":"Login cancelado.","auth/too-many-requests":"Muitas tentativas. Aguarde um pouco."};
 const emailOk=e=>/^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/.test(e);
@@ -197,16 +211,5 @@ $("finalizar").onclick=()=>{
   const texto=`Olá, Claudia Fitness! 💗\nQuero finalizar meu pedido:\n\n${linhas.join("\n")}\n\nTotal: ${brl(total)}\nCliente: ${usuario.displayName||usuario.email}\n\nComo faço o pagamento?`;
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`,"_blank","noopener,noreferrer");
 };
-const firebaseConfig = {
-  apiKey: "AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
-  authDomain: "claudia-fitness-d5d8e.firebaseapp.com",
-  projectId: "claudia-fitness-d5d8e",
-  storageBucket: "claudia-fitness-d5d8e.firebasestorage.app",
-  messagingSenderId: "613004915926",
-  appId: "1:613004915926:web:e4636bcc3941b86e660577",
-  measurementId: "G-8QVQNGEP98"
-};
 
 renderHome();renderRodape();renderCarrinho();rota();iniciaAuth();
-
-
