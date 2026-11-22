@@ -208,6 +208,15 @@ $("finalizar").onclick=()=>{
   const texto=`Olá, Claudia Fitness! 💗\nQuero finalizar meu pedido:\n\n${linhas.join("\n")}\n\nTotal: ${brl(total)}\nCliente: ${usuario.displayName||usuario.email}\n\nComo faço o pagamento?`;
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`,"_blank","noopener,noreferrer");
 };
+const firebaseConfi = {
+  apiKey: "AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
+  authDomain: "claudia-fitness-d5d8e.firebaseapp.com",
+  projectId: "claudia-fitness-d5d8e",
+  storageBucket: "claudia-fitness-d5d8e.firebasestorage.app",
+  messagingSenderId: "613004915926",
+  appId: "1:613004915926:web:e4636bcc3941b86e660577",
+  measurementId: "G-8QVQNGEP98"
+};
 
 renderHome();renderRodape();renderCarrinho();rota();iniciaAuth();
 
