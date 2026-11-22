@@ -4,8 +4,14 @@ const LOJA = { // dados que aparecem no rodapé e nas políticas
   razao:"Claudia Fitness", doc:"CNPJ/CPF 00.000.000/0000-00",
   email:"contato@seudominio.com.br", cidade:"Sua cidade - UF", prazoTroca:"30"
 };
-const firebaseConfig = { // Firebase Console > Configurações do projeto
-  apiKey:"SUA_API_KEY", authDomain:"SEU_PROJETO.firebaseapp.com", projectId:"SEU_PROJETO", appId:"SEU_APP_ID"
+const firebaseConfig = {
+  apiKey: "AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
+  authDomain: "claudia-fitness-d5d8e.firebaseapp.com",
+  projectId: "claudia-fitness-d5d8e",
+  storageBucket: "claudia-fitness-d5d8e.firebasestorage.app",
+  messagingSenderId: "613004915926",
+  appId: "1:613004915926:web:e4636bcc3941b86e660577",
+  measurementId: "G-8QVQNGEP98"
 };
 /* ===================================== */
 
@@ -159,7 +165,7 @@ document.querySelectorAll("#menu a").forEach(a=>a.onclick=fechaTudo);
 $("loginBtn").onclick=()=>$("modal").classList.add("on");
 $("fechaModal").onclick=()=>$("modal").classList.remove("on");
 
-/* ---------- Login (Firebase Auth: e-mail e Google) ---------- */const configurado=!firebaseConfig.apiKey.startsWith("SUA_");
+
 
 
 const msg=t=>$("msgLogin").textContent=t;
