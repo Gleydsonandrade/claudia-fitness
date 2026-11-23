@@ -1,240 +1,341 @@
-/* ===== CONFIGURAÇÃO (edite aqui) ===== */
-const WHATSAPP = "5584981807021"; // DDI+DDD+número, só dígitos
-const LOJA = { // dados que aparecem no rodapé e nas políticas
-  razao:"Claudia Fitness", doc:"CNPJ/CPF 00.000.000/0000-00",
-  email:"contato@seudominio.com.br", cidade:"Sua cidade - UF", prazoTroca:"30"
-};
-const firebaseConfig = { // Firebase Console > Configurações do projeto
-  apiKey:"AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
-  authDomain:"claudia-fitness-d5d8e.firebaseapp.com",
-  projectId:"claudia-fitness-d5d8e",
-  appId:"1:613004915926:web:e4636bcc3941b86e660577"
-};
-/* ===================================== */
+/* Se der qualquer erro, aparece uma faixa vermelha no topo com o motivo */
+window.addEventListener("error", function (e) {
+  var d = document.getElementById("erroJs");
+  if (!d) { d = document.createElement("div"); d.id = "erroJs"; document.body.appendChild(d); }
+  d.textContent = "Erro no site: " + e.message + " (linha " + e.lineno + ")";
+});
 
-const TAMANHOS=["PP","P","M","G","GG"];
-const CATS={
- shorts:{nome:"Shorts",desc:"Conforto e liberdade para treinar."},
- calcas:{nome:"Calças",desc:"Leggings e joggers com modelagem perfeita."},
- blusas:{nome:"Blusas",desc:"Tops, croppeds e dry fits para todos os treinos."}
+/* ===== Firebase ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBxt0S_NGB4fatTd6x0CP2BPhqVxvPJcKs",
+  authDomain: "claudia-fitness-d5d8e.firebaseapp.com",
+  projectId: "claudia-fitness-d5d8e",
+  storageBucket: "claudia-fitness-d5d8e.firebasestorage.app",
+  messagingSenderId: "613004915926",
+  appId: "1:613004915926:web:e4636bcc3941b86e660577"
 };
-const PRODUTOS=[
- {id:1,cat:"shorts",nome:"Short Suplex Rosa",preco:69.9},
- {id:2,cat:"shorts",nome:"Short Preto Cintura Alta",preco:79.9},
- {id:3,cat:"shorts",nome:"Short Saia Branco",preco:74.9},
- {id:4,cat:"calcas",nome:"Legging Preta Power",preco:119.9},
- {id:5,cat:"calcas",nome:"Calça Jogger Rosa",preco:129.9},
- {id:6,cat:"calcas",nome:"Legging Cós Alto Branca",preco:124.9},
- {id:7,cat:"blusas",nome:"Blusa Dry Fit Branca",preco:59.9},
- {id:8,cat:"blusas",nome:"Cropped Rosa Neon",preco:49.9},
- {id:9,cat:"blusas",nome:"Top Preto Sustentação",preco:54.9}
+
+const WHATSAPP = "5584981807021";
+const TAM = ["PP", "P", "M", "G", "GG"];
+
+/* ===== As 8 peças da loja ===== */
+const PRODUTOS = [
+  { id: "p1", nome: "Blusa Regata Rosa",        cat: "Blusas", preco: 69.9,  cor: "rosa",   t: TAM },
+  { id: "p2", nome: "Blusa Cropped Preta",      cat: "Blusas", preco: 74.9,  cor: "preto",  t: TAM },
+  { id: "p3", nome: "Blusa Manga Longa Branca", cat: "Blusas", preco: 89.9,  cor: "branco", t: TAM },
+  { id: "p4", nome: "Calça Legging Preta",      cat: "Calças", preco: 119.9, cor: "preto",  t: TAM },
+  { id: "p5", nome: "Calça Legging Rosa",       cat: "Calças", preco: 119.9, cor: "rosa",   t: TAM },
+  { id: "p6", nome: "Short Cintura Alta Rosa",  cat: "Shorts", preco: 79.9,  cor: "rosa",   t: TAM },
+  { id: "p7", nome: "Short Bike Preto",         cat: "Shorts", preco: 69.9,  cor: "preto",  t: TAM },
+  { id: "p8", nome: "Short Esportivo Branco",   cat: "Shorts", preco: 64.9,  cor: "branco", t: TAM }
 ];
-const $=id=>document.getElementById(id);
-const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const el=(tag,props={},...kids)=>{const e=document.createElement(tag);Object.assign(e,props);kids.forEach(k=>e.append(k));return e};
+const CORES = ["rosa", "preto", "branco"];
 
-/* Esconde a logo se logo.png não existir */
-const logoImg=document.querySelector(".logo img");
-logoImg.addEventListener("error",()=>{logoImg.style.display="none"});
-if(logoImg.complete&&logoImg.naturalWidth===0)logoImg.style.display="none";
+const $ = (id) => document.getElementById(id);
+const brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-/* ---------- Carrinho (validado contra o catálogo) ---------- */
-let carrinho=[];
-try{
-  const salvo=JSON.parse(localStorage.getItem("cf_cart")||"[]");
-  carrinho=salvo.filter(i=>PRODUTOS.some(p=>p.id===i.id)&&TAMANHOS.includes(i.tam)&&Number.isInteger(i.q)&&i.q>0&&i.q<=20);
-}catch{carrinho=[]}
-const salvar=()=>{try{localStorage.setItem("cf_cart",JSON.stringify(carrinho))}catch{}};
-const prod=id=>PRODUTOS.find(p=>p.id===id);
-function toast(t){const x=$("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",2500)}
+/* ---------- Toast ---------- */
+let tt;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(tt);
+  tt = setTimeout(() => { t.hidden = true; }, 3200);
+}
 
-function renderCarrinho(){
-  const box=$("itens");box.replaceChildren();
-  let total=0,qt=0;
-  if(!carrinho.length)box.append(el("p",{textContent:"Seu carrinho está vazio."}));
-  carrinho.forEach((i,idx)=>{
-    const p=prod(i.id);total+=p.preco*i.q;qt+=i.q;
-    const mais=el("button",{textContent:"+"}),menos=el("button",{textContent:"−"});
-    mais.onclick=()=>{if(i.q<20){i.q++;salvar();renderCarrinho()}};
-    menos.onclick=()=>{i.q--;if(i.q<=0)carrinho.splice(idx,1);salvar();renderCarrinho()};
-    box.append(el("div",{className:"item"},
-      el("div",{},el("strong",{textContent:p.nome}),el("br"),el("small",{textContent:`Tam. ${i.tam} · ${brl(p.preco)}`})),
-      el("div",{className:"qtdbtn"},menos,el("span",{textContent:` ${i.q} `}),mais)));
+/* ---------- Catálogo ---------- */
+let filtro = "Todas";
+
+function renderFiltros() {
+  const cats = ["Todas"].concat(Array.from(new Set(PRODUTOS.map((p) => p.cat))));
+  const box = $("filtros");
+  box.textContent = "";
+  cats.forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = c;
+    b.setAttribute("aria-pressed", String(c === filtro));
+    b.addEventListener("click", () => { filtro = c; renderFiltros(); renderGrade(); });
+    box.appendChild(b);
   });
-  $("total").textContent=brl(total);$("qtd").textContent=qt;
-}
-function addCarrinho(id,tam){
-  const ex=carrinho.find(i=>i.id===id&&i.tam===tam);
-  if(ex){if(ex.q<20)ex.q++}else carrinho.push({id,tam,q:1});
-  salvar();renderCarrinho();toast("Adicionado ao carrinho 💗");
 }
 
-/* ---------- Políticas ---------- */
-const TEXTOS={
- trocas:{titulo:"Política de troca e devolução",blocos:[
-  ["Direito de arrependimento","Compras feitas pela internet podem ser desfeitas em até 7 dias corridos após o recebimento, sem precisar justificar, conforme o Código de Defesa do Consumidor. O valor pago é devolvido integralmente."],
-  ["Troca por tamanho ou modelo","Aceitamos troca em até "+LOJA.prazoTroca+" dias após o recebimento, conforme disponibilidade em estoque. A peça deve estar sem uso, sem lavagem, com etiqueta e na embalagem original."],
-  ["Produto com defeito","Se a peça chegar com defeito de fabricação, avise em até 30 dias do recebimento. Faremos a troca, o conserto ou a devolução do valor, conforme sua escolha e a lei."],
-  ["Como solicitar","Fale conosco pelo WhatsApp ou pelo e-mail "+LOJA.email+", informando o número do pedido e, se possível, fotos da peça. Responderemos com as instruções de envio."],
-  ["Frete da troca","Em caso de defeito ou erro nosso, o frete é por nossa conta. Em troca por tamanho ou preferência, o frete de envio da peça pode ser combinado com você no atendimento."],
-  ["Peças que não trocamos","Por higiene, não trocamos peças íntimas usadas ou sem a etiqueta de proteção, exceto em caso de defeito."]]},
- privacidade:{titulo:"Política de privacidade",blocos:[
-  ["Quem somos",LOJA.razao+" ("+LOJA.doc+"), "+LOJA.cidade+". Somos responsáveis pelo tratamento dos seus dados neste site. Contato: "+LOJA.email+"."],
-  ["Quais dados coletamos","Nome e e-mail (quando você cria conta ou entra com Google), e os itens do seu carrinho. Não coletamos nem armazenamos dados de cartão: o pagamento é combinado diretamente pelo WhatsApp."],
-  ["Para que usamos","Para identificar você no login, montar seu pedido, enviá-lo ao nosso WhatsApp e atendê-la. Não vendemos nem compartilhamos seus dados para publicidade."],
-  ["Onde ficam os dados","O login é feito pelo serviço Firebase Authentication, do Google, que guarda e protege seu e-mail e sua senha. O carrinho fica salvo apenas no seu aparelho, e você pode apagá-lo limpando os dados do navegador."],
-  ["WhatsApp","Ao finalizar o pedido, sua mensagem é enviada pelo WhatsApp, que tem a própria política de privacidade."],
-  ["Seus direitos (LGPD)","Você pode pedir confirmação de que tratamos seus dados, acesso, correção, exclusão da conta e informações sobre compartilhamento, a qualquer momento, pelo e-mail "+LOJA.email+"."],
-  ["Segurança","Usamos conexão HTTPS, validação dos dados digitados e login por serviço especializado. Se houver incidente que afete seus dados, avisaremos conforme a lei."],
-  ["Atualizações","Podemos atualizar esta política. A versão vigente é sempre a publicada nesta página."]]}
-};
-function renderTexto(slug){
-  const t=TEXTOS[slug],box=$("pagina");box.replaceChildren();
-  const w=el("div",{className:"leg"});
-  w.append(el("a",{className:"voltar",href:"#topo",textContent:"← Voltar ao início"}),el("h2",{textContent:t.titulo}));
-  t.blocos.forEach(([h,p])=>w.append(el("h3",{textContent:h}),el("p",{textContent:p})));
-  w.append(el("p",{className:"aviso",textContent:"Última atualização: novembro de 2026."}));
-  box.append(w);
-}
-function renderRodape(){
-  const f=$("rodape");f.replaceChildren(
-    el("a",{href:"#/trocas",textContent:"Trocas e devoluções"}),
-    el("a",{href:"#/privacidade",textContent:"Privacidade"}),
-    el("p",{textContent:LOJA.razao+" · "+LOJA.doc+" · "+LOJA.cidade}),
-    el("p",{textContent:LOJA.email}),
-    el("p",{textContent:"© 2026 Claudia Fitness · Todos os direitos reservados"}));
+function renderGrade() {
+  $("grade").innerHTML = PRODUTOS
+    .filter((p) => filtro === "Todas" || p.cat === filtro)
+    .map((p) => `
+    <article class="card">
+      <div class="foto c-${CORES.includes(p.cor) ? p.cor : "rosa"}" aria-hidden="true">CF</div>
+      <div class="info">
+        <h3>${esc(p.nome)}</h3>
+        <span class="preco">${brl(p.preco)}</span>
+        <div class="tamanhos" role="radiogroup" aria-label="Tamanho de ${esc(p.nome)}">
+          ${p.t.map((t, i) => `<label><input type="radio" name="t-${esc(p.id)}" value="${esc(t)}" ${i === 0 ? "checked" : ""}><span>${esc(t)}</span></label>`).join("")}
+        </div>
+        <button class="btn" type="button" data-add="${esc(p.id)}">Adicionar ao carrinho</button>
+      </div>
+    </article>`).join("");
 }
 
-/* ---------- Loja e páginas ---------- */
-function renderHome(){
-  const c=$("cats");c.replaceChildren();
-  Object.entries(CATS).forEach(([slug,k])=>c.append(el("a",{className:"cat",href:"#/"+slug},
-    el("strong",{textContent:k.nome}),el("span",{textContent:k.desc}),el("span",{textContent:"Ver peças →"}))));
+$("grade").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-add]");
+  if (!b) return;
+  const p = PRODUTOS.find((x) => x.id === b.dataset.add);
+  if (!p) return;
+  const r = b.closest(".card").querySelector("input[type=radio]:checked");
+  adicionar(p.id, r ? r.value : p.t[0]);
+});
+
+/* ---------- Carrinho ---------- */
+let carrinho = [];
+
+function carregar() {
+  try {
+    const bruto = JSON.parse(localStorage.getItem("rn_carrinho") || "[]");
+    if (!Array.isArray(bruto)) return;
+    carrinho = bruto.map((i) => {
+      const p = PRODUTOS.find((x) => x.id === i.id);
+      const q = Math.floor(Number(i.q));
+      return p && p.t.includes(i.t) && q > 0 ? { id: p.id, t: i.t, q: Math.min(q, 10) } : null;
+    }).filter(Boolean);
+  } catch (e) { carrinho = []; }
 }
-function renderPagina(slug){
-  const k=CATS[slug],box=$("pagina");box.replaceChildren();
-  box.append(el("a",{className:"voltar",href:"#loja",textContent:"← Voltar à loja"}),
-    el("h2",{textContent:k.nome}),el("p",{className:"sub",textContent:k.desc}));
-  const g=el("div",{className:"grid"});
-  PRODUTOS.filter(p=>p.cat===slug).forEach(p=>{
-    let tam="M";
-    const tams=el("div",{className:"tams",role:"group",ariaLabel:"Tamanho"});
-    TAMANHOS.forEach(t=>{
-      const b=el("button",{textContent:t,className:t===tam?"on":""});
-      b.onclick=()=>{tam=t;[...tams.children].forEach(x=>x.classList.toggle("on",x===b))};
-      tams.append(b);
-    });
-    const btn=el("button",{className:"btn",textContent:"Adicionar ao carrinho"});
-    btn.onclick=()=>addCarrinho(p.id,tam);
-    g.append(el("article",{className:"card"},
-      el("div",{className:"info"},el("h3",{textContent:p.nome}),el("span",{className:"preco",textContent:brl(p.preco)}),
-        el("small",{textContent:"Escolha o tamanho:"}),tams,btn)));
-  });
-  box.append(g);
-  const med=[["PP","34","60-64","86-90"],["P","36","65-69","91-95"],["M","38-40","70-74","96-100"],["G","42","75-80","101-106"],["GG","44-46","81-88","107-114"]];
-  const t=el("table",{className:"tbl"});
-  const tr=el("tr");["Tam.","Manequim","Cintura (cm)","Quadril (cm)"].forEach(h=>tr.append(el("th",{textContent:h})));
-  t.append(tr);
-  med.forEach(r=>{const x=el("tr");r.forEach(v=>x.append(el("td",{textContent:v})));t.append(x)});
-  box.append(el("h3",{textContent:"Tabela de medidas (aprox.)",style:"margin-top:2rem;text-align:center"}),t);
+
+function salvar() {
+  try { localStorage.setItem("rn_carrinho", JSON.stringify(carrinho)); } catch (e) {}
+  renderCarrinho();
 }
-function rota(){
-  const h=location.hash,m=h.match(/^#\/(shorts|calcas|blusas|trocas|privacidade)$/);
-  if(m){
-    const slug=m[1],nome=CATS[slug]?CATS[slug].nome:TEXTOS[slug].titulo;
-    CATS[slug]?renderPagina(slug):renderTexto(slug);
-    $("home").hidden=true;$("pagina").hidden=false;
-    document.title=nome+" | Claudia Fitness";scrollTo(0,0);
-  }else{
-    $("pagina").hidden=true;$("home").hidden=false;document.title="Claudia Fitness | Moda Fitness";
-    const t=/^#[a-z]+$/.test(h)?document.getElementById(h.slice(1)):null;
-    t?t.scrollIntoView():scrollTo(0,0);
+
+function adicionar(id, t) {
+  const i = carrinho.find((x) => x.id === id && x.t === t);
+  if (i) i.q = Math.min(i.q + 1, 10);
+  else carrinho.push({ id: id, t: t, q: 1 });
+  salvar();
+  toast("Adicionado ao carrinho");
+}
+
+const totalCarrinho = () => carrinho.reduce((s, i) => s + PRODUTOS.find((p) => p.id === i.id).preco * i.q, 0);
+
+function renderCarrinho() {
+  $("qtdCarrinho").textContent = carrinho.reduce((s, i) => s + i.q, 0);
+  $("total").textContent = brl(totalCarrinho());
+  const ul = $("itens");
+  if (!carrinho.length) {
+    ul.innerHTML = '<li class="vazio">Seu carrinho está vazio. Escolha uma peça para começar.</li>';
+    return;
   }
+  ul.innerHTML = carrinho.map((i, n) => {
+    const p = PRODUTOS.find((x) => x.id === i.id);
+    return `<li>
+      <div><strong>${esc(p.nome)}</strong><br><small>Tamanho ${esc(i.t)} · ${brl(p.preco)}</small></div>
+      <strong>${brl(p.preco * i.q)}</strong>
+      <div class="qtd"><button type="button" data-d="${n}" aria-label="Diminuir">−</button><span>${i.q}</span><button type="button" data-u="${n}" aria-label="Aumentar">+</button></div>
+      <button type="button" class="btn-link" data-r="${n}">Remover</button>
+    </li>`;
+  }).join("");
 }
-addEventListener("hashchange",rota);
 
-/* ---------- Menu / painéis ---------- */
-const fechaTudo=()=>{$("menu").classList.remove("on");$("painel").classList.remove("on");$("overlay").classList.remove("on")};
-$("menuBtn").onclick=()=>{$("menu").classList.add("on");$("overlay").classList.add("on")};
-$("cartBtn").onclick=()=>{$("painel").classList.add("on");$("overlay").classList.add("on")};
-$("fechaCart").onclick=fechaTudo;$("overlay").onclick=fechaTudo;
-document.querySelectorAll("#menu a").forEach(a=>a.onclick=fechaTudo);
-$("loginBtn").onclick=()=>$("modal").classList.add("on");
-$("fechaModal").onclick=()=>$("modal").classList.remove("on");
+$("itens").addEventListener("click", (e) => {
+  const d = e.target.dataset;
+  let n;
+  if (d.u !== undefined) { n = +d.u; if (carrinho[n]) carrinho[n].q = Math.min(carrinho[n].q + 1, 10); }
+  else if (d.d !== undefined) { n = +d.d; if (carrinho[n] && --carrinho[n].q <= 0) carrinho.splice(n, 1); }
+  else if (d.r !== undefined) { carrinho.splice(+d.r, 1); }
+  else return;
+  salvar();
+});
+$("btnLimpar").addEventListener("click", () => { carrinho = []; salvar(); });
 
-/* ---------- Login (Firebase Auth: e-mail e Google) ---------- */
-const configurado=!firebaseConfig.apiKey.startsWith("SUA_");
-let auth=null,A=null,usuario=null;
-async function iniciaAuth(){
-  if(!configurado||A)return A;
-  try{
-    const V="10.12.2",B="https://www.gstatic.com/firebasejs/"+V+"/";
-    const [app,au]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js")]);
-    auth=au.getAuth(app.initializeApp(firebaseConfig));A=au;
-    au.onAuthStateChanged(auth,u=>{
-      usuario=u;
-      $("loginBtn").textContent=u?"Conta":"Entrar";
-      $("logado").style.display=u?"block":"none";
-      $("formLogin").style.display=u?"none":"contents";
-      $("modalTitulo").textContent=u?"Minha conta":"Entrar";
-      $("quem").textContent=u?"Logada como "+(u.displayName||u.email):"";
-    });
-  }catch(e){A=null}
-  return A;
-}
-const msg=t=>$("msgLogin").textContent=t;
-const erros={"auth/invalid-credential":"E-mail ou senha incorretos.","auth/email-already-in-use":"Este e-mail já está cadastrado.","auth/weak-password":"Senha fraca (mín. 8 caracteres).","auth/invalid-email":"E-mail inválido.","auth/popup-closed-by-user":"Login cancelado.","auth/too-many-requests":"Muitas tentativas. Aguarde um pouco."};
-const emailOk=e=>/^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/.test(e);
-async function acao(fn){
-  if(!configurado)return msg("Configure o Firebase no código para ativar o login.");
-  const a=await iniciaAuth();
-  if(!a)return msg("Não foi possível carregar o login. Verifique sua internet.");
-  try{msg("");await fn(a);$("modal").classList.remove("on")}catch(e){msg(erros[e.code]||"Não foi possível entrar. Tente novamente.")}
-}
-function pegaCampos(){
-  const e=$("email").value.trim(),s=$("senha").value;
-  if(!emailOk(e)){msg("Digite um e-mail válido.");return null}
-  if(s.length<8){msg("A senha precisa ter pelo menos 8 caracteres.");return null}
-  return [e,s];
-}
-$("entrar").onclick=()=>{const c=pegaCampos();if(c)acao(a=>a.signInWithEmailAndPassword(auth,...c))};
-$("criar").onclick=()=>{const c=pegaCampos();if(c)acao(a=>a.createUserWithEmailAndPassword(auth,...c))};
-$("google").onclick=()=>acao(a=>a.signInWithPopup(auth,new a.GoogleAuthProvider()));
-$("sair").onclick=()=>A&&A.signOut(auth);
+/* ---------- Gaveta e menu ---------- */
+const gaveta = $("gaveta"), fundo = $("fundo"), menu = $("menu"), btnMenu = $("btnMenu");
 
-/* ---------- Pagamento via WhatsApp ---------- */
-$("finalizar").onclick=()=>{
-  if(!carrinho.length)return toast("Carrinho vazio");
-  if(!usuario){fechaTudo();$("modal").classList.add("on");return msg("Entre na sua conta para finalizar o pedido.")}
-  let total=0;
-  const linhas=carrinho.map(i=>{const p=prod(i.id);total+=p.preco*i.q;return `• ${i.q}x ${p.nome} (Tam. ${i.tam}) - ${brl(p.preco*i.q)}`});
-  const texto=`Olá, Claudia Fitness! 💗\nQuero finalizar meu pedido:\n\n${linhas.join("\n")}\n\nTotal: ${brl(total)}\nCliente: ${usuario.displayName||usuario.email}\n\nComo faço o pagamento?`;
-  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`,"_blank","noopener,noreferrer");
+function abrirCarrinho() {
+  fecharMenu();
+  gaveta.classList.add("aberta");
+  gaveta.setAttribute("aria-hidden", "false");
+  fundo.hidden = false;
+  $("fecharCarrinho").focus();
+}
+function fecharCarrinho() {
+  gaveta.classList.remove("aberta");
+  gaveta.setAttribute("aria-hidden", "true");
+  fundo.hidden = true;
+}
+function fecharMenu() {
+  menu.classList.remove("aberto");
+  btnMenu.setAttribute("aria-expanded", "false");
+  if (!gaveta.classList.contains("aberta")) fundo.hidden = true;
+}
+
+btnMenu.addEventListener("click", () => {
+  const abrir = !menu.classList.contains("aberto");
+  menu.classList.toggle("aberto", abrir);
+  btnMenu.setAttribute("aria-expanded", String(abrir));
+  fundo.hidden = !abrir;
+});
+menu.addEventListener("click", (e) => { if (e.target.tagName === "A") fecharMenu(); });
+fundo.addEventListener("click", () => { fecharCarrinho(); fecharMenu(); });
+$("btnCarrinho").addEventListener("click", abrirCarrinho);
+$("fecharCarrinho").addEventListener("click", fecharCarrinho);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { fecharCarrinho(); fecharMenu(); } });
+
+/* ---------- Conta: variáveis ---------- */
+let auth = null, user = null, F = null, modo = "entrar";
+const dlg = $("dlgConta");
+
+function aviso(t) {
+  const a = $("avisoConta");
+  a.textContent = t || "";
+  a.hidden = !t;
+}
+
+function definirModo(m) {
+  modo = m;
+  const criar = m === "criar";
+  $("tituloConta").textContent = criar ? "Criar conta" : "Entrar";
+  $("btnEnviar").textContent = criar ? "Criar conta" : "Entrar";
+  $("abaEntrar").setAttribute("aria-selected", String(!criar));
+  $("abaCriar").setAttribute("aria-selected", String(criar));
+  $("nome").hidden = !criar;
+  $("lblNome").hidden = !criar;
+  $("nome").required = criar;
+  $("senha").autocomplete = criar ? "new-password" : "current-password";
+  $("btnEsqueci").hidden = criar;
+  aviso("");
+}
+
+function abrirConta(m, msg) {
+  fecharMenu();
+  definirModo(m);
+  aviso(msg);
+  if (!dlg.open) dlg.showModal();
+}
+
+function atualizarConta() {
+  const b = $("btnConta");
+  b.textContent = user ? "Sair" : "Entrar";
+  b.title = user ? "Conectada(o) como " + (user.displayName || user.email || "") : "";
+}
+
+/* ---------- Finalizar pelo WhatsApp ---------- */
+$("btnFinalizar").addEventListener("click", () => {
+  if (!carrinho.length) return toast("Adicione ao menos uma peça");
+  if (!user) {
+    fecharCarrinho();
+    abrirConta("entrar", "Entre na sua conta para finalizar o pedido.");
+    return;
+  }
+  const linhas = carrinho.map((i) => {
+    const p = PRODUTOS.find((x) => x.id === i.id);
+    return "• " + i.q + "x " + p.nome + " (tam. " + i.t + ") - " + brl(p.preco * i.q);
+  });
+  const nome = (user.displayName || "").slice(0, 60);
+  const msg = "Olá! Quero finalizar meu pedido na Claudia Fitness.\n\nCliente: " + nome +
+    "\nE-mail: " + (user.email || "") + "\n\n" + linhas.join("\n") +
+    "\n\nTotal: " + brl(totalCarrinho()) + "\n\nComo faço o pagamento e qual o prazo de entrega?";
+  window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg), "_blank", "noopener,noreferrer");
+});
+$("linkContato").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Olá! Vim pelo site da Claudia Fitness.");
+
+/* ---------- Início da loja (roda antes do Firebase, assim as peças sempre aparecem) ---------- */
+$("ano").textContent = new Date().getFullYear();
+carregar();
+renderFiltros();
+renderGrade();
+renderCarrinho();
+atualizarConta();
+
+/* ---------- Firebase (carrega à parte; se falhar, a loja continua funcionando) ---------- */
+const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
+const fbPronto = (async () => {
+  try {
+    if (location.protocol === "file:") return;
+    const app = await import(FB + "firebase-app.js");
+    const a = await import(FB + "firebase-auth.js");
+    F = a;
+    auth = a.getAuth(app.initializeApp(firebaseConfig));
+    a.onAuthStateChanged(auth, (u) => { user = u; atualizarConta(); });
+  } catch (e) { console.error("Firebase indisponível", e); }
+})();
+
+async function pronto() {
+  await fbPronto;
+  if (auth) return true;
+  aviso(location.protocol === "file:"
+    ? "Para entrar, abra o site pelo endereço publicado (https://) ou por localhost, não pelo arquivo no computador."
+    : "Não foi possível conectar ao login agora. Recarregue a página e tente de novo.");
+  return false;
+}
+
+const ERROS = {
+  "auth/invalid-email": "E-mail inválido.",
+  "auth/user-not-found": "E-mail ou senha incorretos.",
+  "auth/wrong-password": "E-mail ou senha incorretos.",
+  "auth/invalid-credential": "E-mail ou senha incorretos.",
+  "auth/email-already-in-use": "Este e-mail já tem conta. Use a aba Entrar.",
+  "auth/weak-password": "Senha fraca. Use ao menos 8 caracteres.",
+  "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos e tente de novo.",
+  "auth/network-request-failed": "Sem conexão. Verifique sua internet.",
+  "auth/popup-closed-by-user": "Login com Google cancelado.",
+  "auth/popup-blocked": "O navegador bloqueou a janela do Google. Libere pop-ups e tente de novo.",
+  "auth/unauthorized-domain": "Este endereço não está autorizado no Firebase. Veja Authentication > Settings > Authorized domains."
 };
+const msgErro = (e) => ERROS[e && e.code] || "Não foi possível concluir. Tente novamente.";
+const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
-    (function(){
-      var $=function(i){return document.getElementById(i)};
+$("abaEntrar").addEventListener("click", () => definirModo("entrar"));
+$("abaCriar").addEventListener("click", () => definirModo("criar"));
+$("fecharConta").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
 
-      /* Logo: se logo.png existir, esconde o texto para o nome não aparecer duas vezes */
-      var logo=document.querySelector(".logo"),img=logo.querySelector("img");
-      function temLogo(){logo.classList.add("tem-logo")}
-      if(img.complete&&img.naturalWidth>0)temLogo();
-      img.addEventListener("load",temLogo);
+$("formConta").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!(await pronto())) return;
+  const email = $("email").value.trim(), senha = $("senha").value, nome = $("nome").value.trim();
+  if (!emailOk(email)) return aviso("Digite um e-mail válido.");
+  if (modo === "criar") {
+    if (nome.length < 2) return aviso("Digite seu nome.");
+    if (senha.length < 8 || !/[A-Za-z]/.test(senha) || !/\d/.test(senha)) return aviso("A senha precisa de 8 caracteres, com letras e números.");
+  } else if (!senha) return aviso("Digite sua senha.");
+  const btn = $("btnEnviar");
+  btn.disabled = true;
+  try {
+    if (modo === "criar") {
+      const c = await F.createUserWithEmailAndPassword(auth, email, senha);
+      await F.updateProfile(c.user, { displayName: nome });
+      user = c.user;
+      atualizarConta();
+    } else {
+      await F.signInWithEmailAndPassword(auth, email, senha);
+    }
+    $("formConta").reset();
+    dlg.close();
+    toast("Tudo certo! Você está logada(o).");
+  } catch (err) { aviso(msgErro(err)); }
+  finally { btn.disabled = false; }
+});
 
-      /* Marca a categoria aberta (usado pelo CSS para desenhar as peças) */
-      function cat(){
-        var m=location.hash.match(/^#\/(shorts|calcas|blusas)$/);
-        $("pagina").setAttribute("data-cat",m?m[1]:"");
-      }
-      cat();addEventListener("hashchange",cat);
+$("btnGoogle").addEventListener("click", async () => {
+  if (!(await pronto())) return;
+  try {
+    await F.signInWithPopup(auth, new F.GoogleAuthProvider());
+    dlg.close();
+    toast("Login com Google feito!");
+  } catch (err) { aviso(msgErro(err)); }
+});
 
-      /* Aviso: o login do Firebase pode não funcionar abrindo o arquivo direto no computador */
-      if(location.protocol==="file:"){
-        $("loginBtn").addEventListener("click",function(){
-          $("msgLogin").textContent="Para o login funcionar, abra o site por um endereço http(s) (hospedado ou servidor local), e não clicando direto no arquivo.";
-        });
-      }
-    })();
-  
+$("btnEsqueci").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+  if (!emailOk(email)) return aviso("Digite seu e-mail acima para receber o link de nova senha.");
+  if (!(await pronto())) return;
+  try { await F.sendPasswordResetEmail(auth, email); } catch (e) {}
+  aviso("Se este e-mail tiver conta, enviamos um link para criar nova senha.");
+});
 
-renderHome();renderRodape();renderCarrinho();rota();iniciaAuth();
+$("btnConta").addEventListener("click", async () => {
+  if (user && auth) { await F.signOut(auth); toast("Você saiu da conta."); }
+  else abrirConta("entrar");
+});
+// fim
