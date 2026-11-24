@@ -1,7 +1,10 @@
-/* Se der qualquer erro, aparece uma faixa vermelha no topo com o motivo */
+/* Se der qualquer erro, aparece uma faixa vermelha no topo com o motivo
+   (e o site volta a mostrar o conteúdo, sem efeitos) */
 window.addEventListener("error", function (e) {
+  document.documentElement.classList.remove("js");
   var d = document.getElementById("erroJs");
   if (!d) { d = document.createElement("div"); d.id = "erroJs"; document.body.appendChild(d); }
+  d.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:99;background:#c00;color:#fff;padding:10px 16px;font:14px/1.4 monospace;white-space:pre-wrap";
   d.textContent = "Erro no site: " + e.message + " (linha " + e.lineno + ")";
 });
 
@@ -29,7 +32,8 @@ const PRODUTOS = [
 ];
 const CORES = ["rosa", "preto", "branco"];
 
-const $ = (id) => document.getElementById(id);
+/* se algum elemento não existir na página, usa um elemento vazio para o resto do código não parar */
+const $ = (id) => document.getElementById(id) || document.createElement("div");
 const brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
